@@ -177,7 +177,7 @@ export default function App() {
 
 function NewDeposit({ busy, onSubmit }: { busy: boolean; onSubmit: (amount: number, secs: number) => void }) {
   const [amount, setAmount] = useState(1200)
-  const [minutes, setMinutes] = useState(2)
+  const [minutes, setMinutes] = useState(5)
   return (
     <form className="card" onSubmit={(e) => { e.preventDefault(); onSubmit(amount, Math.round(minutes * 60)) }}>
       <h2>Pay a deposit</h2>
