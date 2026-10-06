@@ -21,7 +21,8 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
-const envPath = join(root, '.env.local')
+// ENV_FILE lets the public GitHub Pages build use its own wallets (e.g. .env.pages.local).
+const envPath = join(root, process.env.ENV_FILE || '.env.local')
 const rpc = process.env.RPC_URL || 'https://api.devnet.solana.com'
 const connection = new Connection(rpc, 'confirmed')
 

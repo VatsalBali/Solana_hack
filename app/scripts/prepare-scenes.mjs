@@ -14,7 +14,7 @@ const { AnchorProvider, BN, Program } = anchor
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const env = Object.fromEntries(
-  readFileSync(join(root, '.env.local'), 'utf8')
+  readFileSync(join(root, process.env.ENV_FILE || '.env.local'), 'utf8')
     .split('\n')
     .filter((l) => l.includes('='))
     .map((l) => [l.slice(0, l.indexOf('=')), l.slice(l.indexOf('=') + 1).trim()]),
