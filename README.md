@@ -11,6 +11,8 @@ Today the landlord holds the deposit, decides how much to keep, and the tenant w
 
 Every settlement updates the tenant's **on-chain record** (deposits, full refunds, disputes, amount returned), a rental history the tenant can show the next landlord, which nobody can edit.
 
+**Live on Solana devnet:** program [`5w8Zb7EUDZNaUGo4NGBgN3scdFisZj4rDmv4qvCTrY5e`](https://explorer.solana.com/address/5w8Zb7EUDZNaUGo4NGBgN3scdFisZj4rDmv4qvCTrY5e?cluster=devnet)
+
 Built at the SolanaCZE Build Station, Prague, for Colosseum's Crypto World's Fair (October 2026).
 
 ## Repository
