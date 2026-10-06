@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "setup": "node scripts/setup-demo.mjs"
+    "setup": "node scripts/setup-demo.mjs",
+    "scenes": "node scripts/prepare-scenes.mjs"
   },
   "dependencies": {
     "@anchor-lang/core": "^1.2.1",

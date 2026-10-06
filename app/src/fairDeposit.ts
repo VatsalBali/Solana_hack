@@ -91,16 +91,18 @@ export const outcomeOf = (lease: Lease) => Object.keys(lease.outcome)[0] as 'non
 
 export async function balances(owner: PublicKey) {
   const sol = (await connection.getBalance(owner)) / LAMPORTS_PER_SOL
-  let usdc = 0
-  if (MINT) {
-    try {
-      const b = await connection.getTokenAccountBalance(ata(owner, MINT))
-      usdc = Number(b.value.uiAmount ?? 0)
-    } catch {
-      usdc = 0
-    }
-  }
+  const [usdc] = await usdcBalances([owner])
   return { sol, usdc }
+}
+
+/** Test-USDC balances for several wallets in a single RPC call (public devnet rate-limits hard). */
+export async function usdcBalances(owners: PublicKey[]): Promise<number[]> {
+  if (!MINT) return owners.map(() => 0)
+  const infos = await connection.getMultipleParsedAccounts(owners.map((o) => ata(o, MINT)))
+  return infos.value.map((info) => {
+    const data = info?.data
+    return data && 'parsed' in data ? Number(data.parsed.info.tokenAmount.uiAmount ?? 0) : 0
+  })
 }
 
 export async function fetchLeases(): Promise<LeaseWithKey[]> {

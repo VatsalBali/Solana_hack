@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState, type ReactNode } from 'react'
 import type { Keypair } from '@solana/web3.js'
 import {
   approve,
-  balances,
+  usdcBalances,
   claimAfterTimeout,
   createDeposit,
   dispute,
@@ -71,16 +71,14 @@ export default function App() {
   const refresh = useCallback(async () => {
     if (!isConfigured) return
     try {
-      const [ls, rec, t, l, m] = await Promise.all([
+      const [ls, rec, [t, l, m]] = await Promise.all([
         fetchLeases(),
         fetchRecord(wallets.tenant!.publicKey),
-        balances(wallets.tenant!.publicKey),
-        balances(wallets.landlord!.publicKey),
-        balances(wallets.mediator!.publicKey),
+        usdcBalances([wallets.tenant!.publicKey, wallets.landlord!.publicKey, wallets.mediator!.publicKey]),
       ])
       setLeases(ls)
       setRecord(rec)
-      setUsdc({ tenant: t.usdc, landlord: l.usdc, mediator: m.usdc })
+      setUsdc({ tenant: t, landlord: l, mediator: m })
     } catch (e) {
       setNotice({ text: `Could not load data: ${errorText(e)}`, error: true })
     }
@@ -88,7 +86,8 @@ export default function App() {
 
   useEffect(() => {
     refresh()
-    const id = setInterval(refresh, 8000)
+    // Poll gently and only while the tab is visible: the public devnet RPC rate-limits.
+    const id = setInterval(() => { if (!document.hidden) refresh() }, 15000)
     return () => clearInterval(id)
   }, [refresh])
 
