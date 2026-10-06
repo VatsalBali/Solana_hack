@@ -1,0 +1,905 @@
+{
+  "address": "5w8Zb7EUDZNaUGo4NGBgN3scdFisZj4rDmv4qvCTrY5e",
+  "metadata": {
+    "name": "fair_deposit",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "docs": [
+    "Fair Deposit: a rental deposit held in escrow.",
+    "",
+    "Flow:",
+    "1. Tenant locks the deposit (`create_deposit`). Nobody can move it alone.",
+    "2. Before `refund_after`, the landlord proposes how much goes back (`propose_split`).",
+    "3. Tenant accepts (`approve`) or either side escalates (`dispute`).",
+    "4. A disputed deposit is split by the mediator (`resolve`).",
+    "5. If the landlord never proposes, the tenant takes everything back after",
+    "`refund_after` (`claim_after_timeout`).",
+    "",
+    "Every settlement updates the tenant's on-chain `TenantRecord`."
+  ],
+  "instructions": [
+    {
+      "name": "approve",
+      "docs": [
+        "Tenant accepts the landlord's proposal; funds are paid out immediately."
+      ],
+      "discriminator": [
+        69,
+        74,
+        217,
+        36,
+        115,
+        117,
+        97,
+        76
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "signer": true
+        },
+        {
+          "name": "lease",
+          "writable": true
+        },
+        {
+          "name": "tenant",
+          "writable": true,
+          "relations": [
+            "lease"
+          ]
+        },
+        {
+          "name": "landlord",
+          "relations": [
+            "lease"
+          ]
+        },
+        {
+          "name": "mint",
+          "relations": [
+            "lease"
+          ]
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "lease"
+              }
+            ]
+          }
+        },
+        {
+          "name": "tenant_token",
+          "writable": true
+        },
+        {
+          "name": "landlord_token",
+          "writable": true
+        },
+        {
+          "name": "record",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  99,
+                  111,
+                  114,
+                  100
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "tenant"
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_program"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "claim_after_timeout",
+      "docs": [
+        "Landlord stayed silent past the deadline: the tenant gets everything back."
+      ],
+      "discriminator": [
+        90,
+        0,
+        225,
+        186,
+        150,
+        114,
+        231,
+        76
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "signer": true
+        },
+        {
+          "name": "lease",
+          "writable": true
+        },
+        {
+          "name": "tenant",
+          "writable": true,
+          "relations": [
+            "lease"
+          ]
+        },
+        {
+          "name": "landlord",
+          "relations": [
+            "lease"
+          ]
+        },
+        {
+          "name": "mint",
+          "relations": [
+            "lease"
+          ]
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "lease"
+              }
+            ]
+          }
+        },
+        {
+          "name": "tenant_token",
+          "writable": true
+        },
+        {
+          "name": "landlord_token",
+          "writable": true
+        },
+        {
+          "name": "record",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  99,
+                  111,
+                  114,
+                  100
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "tenant"
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_program"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "create_deposit",
+      "discriminator": [
+        157,
+        30,
+        11,
+        129,
+        16,
+        166,
+        115,
+        75
+      ],
+      "accounts": [
+        {
+          "name": "tenant",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "landlord"
+        },
+        {
+          "name": "mediator"
+        },
+        {
+          "name": "mint"
+        },
+        {
+          "name": "lease",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  108,
+                  101,
+                  97,
+                  115,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "tenant"
+              },
+              {
+                "kind": "arg",
+                "path": "lease_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "lease"
+              }
+            ]
+          }
+        },
+        {
+          "name": "tenant_token",
+          "writable": true
+        },
+        {
+          "name": "record",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  99,
+                  111,
+                  114,
+                  100
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "tenant"
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "lease_id",
+          "type": "u64"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "refund_after",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "dispute",
+      "docs": [
+        "Tenant or landlord escalates to the mediator."
+      ],
+      "discriminator": [
+        216,
+        92,
+        128,
+        146,
+        202,
+        85,
+        135,
+        73
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "signer": true
+        },
+        {
+          "name": "lease",
+          "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "propose_split",
+      "docs": [
+        "Landlord says how much of the deposit goes back to the tenant.",
+        "Can be revised until the tenant answers, but only before `refund_after`."
+      ],
+      "discriminator": [
+        38,
+        104,
+        30,
+        96,
+        107,
+        245,
+        76,
+        252
+      ],
+      "accounts": [
+        {
+          "name": "landlord",
+          "signer": true,
+          "relations": [
+            "lease"
+          ]
+        },
+        {
+          "name": "lease",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "tenant_amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "resolve",
+      "docs": [
+        "Mediator decides the split of a disputed deposit."
+      ],
+      "discriminator": [
+        246,
+        150,
+        236,
+        206,
+        108,
+        63,
+        58,
+        10
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "signer": true
+        },
+        {
+          "name": "lease",
+          "writable": true
+        },
+        {
+          "name": "tenant",
+          "writable": true,
+          "relations": [
+            "lease"
+          ]
+        },
+        {
+          "name": "landlord",
+          "relations": [
+            "lease"
+          ]
+        },
+        {
+          "name": "mint",
+          "relations": [
+            "lease"
+          ]
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "lease"
+              }
+            ]
+          }
+        },
+        {
+          "name": "tenant_token",
+          "writable": true
+        },
+        {
+          "name": "landlord_token",
+          "writable": true
+        },
+        {
+          "name": "record",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  99,
+                  111,
+                  114,
+                  100
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "tenant"
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "tenant_amount",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Lease",
+      "discriminator": [
+        14,
+        103,
+        218,
+        61,
+        248,
+        234,
+        105,
+        84
+      ]
+    },
+    {
+      "name": "TenantRecord",
+      "discriminator": [
+        133,
+        41,
+        49,
+        113,
+        244,
+        169,
+        161,
+        125
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "DepositLocked",
+      "discriminator": [
+        32,
+        241,
+        131,
+        66,
+        63,
+        132,
+        192,
+        116
+      ]
+    },
+    {
+      "name": "DepositSettled",
+      "discriminator": [
+        154,
+        83,
+        222,
+        39,
+        153,
+        147,
+        84,
+        58
+      ]
+    },
+    {
+      "name": "Disputed",
+      "discriminator": [
+        186,
+        235,
+        91,
+        209,
+        148,
+        93,
+        152,
+        217
+      ]
+    },
+    {
+      "name": "SplitProposed",
+      "discriminator": [
+        79,
+        18,
+        65,
+        165,
+        147,
+        244,
+        179,
+        235
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "ZeroAmount",
+      "msg": "Deposit amount must be greater than zero"
+    },
+    {
+      "code": 6001,
+      "name": "DeadlineInPast",
+      "msg": "Refund deadline must be in the future"
+    },
+    {
+      "code": 6002,
+      "name": "SameParty",
+      "msg": "Tenant, landlord and mediator must be different wallets"
+    },
+    {
+      "code": 6003,
+      "name": "Unauthorized",
+      "msg": "Only the right party can do this"
+    },
+    {
+      "code": 6004,
+      "name": "WrongStatus",
+      "msg": "The deposit is not in the right state for this action"
+    },
+    {
+      "code": 6005,
+      "name": "DeadlinePassed",
+      "msg": "The landlord's deadline has passed"
+    },
+    {
+      "code": 6006,
+      "name": "TooEarly",
+      "msg": "The refund deadline has not passed yet"
+    },
+    {
+      "code": 6007,
+      "name": "TooMuch",
+      "msg": "Amount is larger than the deposit"
+    },
+    {
+      "code": 6008,
+      "name": "Overflow",
+      "msg": "Arithmetic overflow"
+    }
+  ],
+  "types": [
+    {
+      "name": "DepositLocked",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "lease",
+            "type": "pubkey"
+          },
+          {
+            "name": "tenant",
+            "type": "pubkey"
+          },
+          {
+            "name": "landlord",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "refund_after",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DepositSettled",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "lease",
+            "type": "pubkey"
+          },
+          {
+            "name": "tenant_amount",
+            "type": "u64"
+          },
+          {
+            "name": "landlord_amount",
+            "type": "u64"
+          },
+          {
+            "name": "outcome",
+            "type": {
+              "defined": {
+                "name": "Outcome"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Disputed",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "lease",
+            "type": "pubkey"
+          },
+          {
+            "name": "by",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Lease",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "tenant",
+            "type": "pubkey"
+          },
+          {
+            "name": "landlord",
+            "type": "pubkey"
+          },
+          {
+            "name": "mediator",
+            "type": "pubkey"
+          },
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "lease_id",
+            "type": "u64"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "refund_after",
+            "docs": [
+              "After this time, if the landlord has not proposed a split,",
+              "the tenant can take the whole deposit back."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "proposed_tenant_amount",
+            "type": "u64"
+          },
+          {
+            "name": "tenant_received",
+            "type": "u64"
+          },
+          {
+            "name": "settled_at",
+            "type": "i64"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "Status"
+              }
+            }
+          },
+          {
+            "name": "outcome",
+            "type": {
+              "defined": {
+                "name": "Outcome"
+              }
+            }
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "vault_bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Outcome",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "None"
+          },
+          {
+            "name": "Agreed"
+          },
+          {
+            "name": "Mediated"
+          },
+          {
+            "name": "TimedOut"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SplitProposed",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "lease",
+            "type": "pubkey"
+          },
+          {
+            "name": "tenant_amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Status",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Active"
+          },
+          {
+            "name": "Proposed"
+          },
+          {
+            "name": "Disputed"
+          },
+          {
+            "name": "Settled"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TenantRecord",
+      "docs": [
+        "A tenant's portable rental history, one per wallet."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "tenant",
+            "type": "pubkey"
+          },
+          {
+            "name": "deposits",
+            "type": "u32"
+          },
+          {
+            "name": "settled",
+            "type": "u32"
+          },
+          {
+            "name": "full_refunds",
+            "type": "u32"
+          },
+          {
+            "name": "disputes",
+            "type": "u32"
+          },
+          {
+            "name": "total_deposited",
+            "type": "u64"
+          },
+          {
+            "name": "total_returned",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ]
+}
