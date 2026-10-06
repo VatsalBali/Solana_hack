@@ -1,8 +1,10 @@
-# Fair Deposit
+# Tessera
 
-Rental deposits in a neutral Solana escrow.
+Rental deposits in a neutral Solana escrow. Fair deposits, provable history.
 
-Today the landlord holds the deposit, decides how much to keep, and the tenant waits. Fair Deposit locks the deposit in USDC in an on-chain escrow that neither side can move alone:
+*Tessera*: in ancient Rome, host and guest broke a token in two and each kept half as proof of trust.
+
+Today the landlord holds the deposit, decides how much to keep, and the tenant waits. Tessera locks the deposit in USDC in an on-chain escrow that neither side can move alone:
 
 1. **Lock.** The tenant deposits USDC into a vault owned by the program.
 2. **Agree.** After move-out, the landlord proposes how much goes back. The tenant approves and the money is paid out instantly.

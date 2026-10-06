@@ -118,7 +118,7 @@ export default function App() {
   if (!isConfigured) {
     return (
       <main className="setup">
-        <h1>Fair Deposit</h1>
+        <h1>Tessera</h1>
         <p>
           Demo wallets are not set up yet. Run <code>node scripts/setup-demo.mjs</code> inside <code>app/</code>,
           then restart <code>npm run dev</code>.
@@ -131,9 +131,9 @@ export default function App() {
     <div className="page">
       <header className="top">
         <div className="brand">
-          <span className="logo">FD</span>
+          <span className="logo">T</span>
           <div>
-            <h1>Fair Deposit</h1>
+            <h1>Tessera</h1>
             <p>Rental deposits in a neutral Solana escrow</p>
           </div>
         </div>
