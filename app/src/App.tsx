@@ -272,7 +272,7 @@ function LeaseCard({ lease, role, me, now, busy, run }: {
               Take my deposit back
             </button>
           )}
-          {(status === 'active' || status === 'proposed') && (
+          {(status === 'proposed' || (status === 'active' && left > 0)) && (
             <button disabled={busy} onClick={() => run('Sent to the mediator', () => dispute(me, lease.publicKey))}>
               Disagree
             </button>
